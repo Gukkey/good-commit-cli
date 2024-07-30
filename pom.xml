@@ -10,14 +10,13 @@
 		good-commit-cli
 	</artifactId>
 	<version>
-		1.0-SNAPSHOT
+		1.0.1
 	</version>
 	<name>
 		good-commit-cli
 	</name>
-	<!-- FIXME change it to the project's website -->
 	<url>
-		http://www.example.com
+		https://github.com/Gukkey/good-commit-cli
 	</url>
 	<properties>
 		<project.build.sourceEncoding>
