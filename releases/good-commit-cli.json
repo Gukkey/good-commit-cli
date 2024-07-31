@@ -1,9 +1,9 @@
 {
-    "version": "1.0.0",
-    "description": "A CLI tool to create git commits following conventional commit standards",
+    "version": "1.0.1",
+    "description": "A CLI alternative for commitzen",
     "homepage": "https://github.com/Gukkey/good-commit-cli/tree/main",
     "license": "MIT",
-    "url": "https://github.com/Gukkey/good-commit-cli/releases/download/v1.0.0/good-commit-cli.exe",
-    "hash": "9ee710a1ea78c749cadf0ee18fa01ad5feaf4f33b6e0fc6b398c2dfff07ec4be",
+    "url": "https://github.com/Gukkey/good-commit-cli/releases/download/v1.0.1/good-commit-cli.exe",
+    "hash": "7ce5bfee673ab38b10ca0eb77429e7d660fd2d42e41ad7df0f51752a0c2ca7a6",
     "bin": "good-commit-cli.exe"
 }
