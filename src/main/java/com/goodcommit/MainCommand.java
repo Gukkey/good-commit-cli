@@ -97,15 +97,19 @@ public class MainCommand implements Runnable {
   @Option(names = { "-h", "--help" }, description = "Display help message")
   boolean help = false;
 
+  Scanner sc = new Scanner(System.in); 
+
   @Override
   public void run() {
+
     System.out.println("\n" + logo + "A CLI alternative for commitzen \n");
-    Scanner sc = new Scanner(System.in);
+
     if (help) {
       System.out.println(helpMessage);
       sc.close();
       return;
     }
+
     if (scopeType == null) {
       try {
         scopeType = selectScopeType();
@@ -115,6 +119,7 @@ public class MainCommand implements Runnable {
         return;
       }
     }
+
     if (scope == null) {
       System.out.print(
           "What is the scope of this change (e.g. component or file name): (press enter to skip):"
@@ -123,60 +128,29 @@ public class MainCommand implements Runnable {
     }
 
     if (description == null) {
-      System.out.print(
-          "Enter the commit description, the description is a short summary of the code changes"
-              + " (maximum 92 characters): ");
-      description = sc.nextLine();
-      while (description.length() > 92 || description.length() == 0) {
-        System.out.print(
-            "The description is too long or empty, please enter a valid description: ");
-        description = sc.nextLine();
-      }
+      description = getDescription();
+      System.out.println("Description: " + description);
     }
+
     if (message == null) {
       System.out.print(
           "Enter the commit message, the message is a longer description of the commit (press enter"
               + " to skip): ");
       message = sc.nextLine();
     }
+
     if (breakingChanges == null) {
-      System.out.print("Does this commit have breaking changes? (y/n): ");
-      String hasBreakingChanges = sc.nextLine();
-      if (hasBreakingChanges.isEmpty()) {
-        hasBreakingChanges = "n";
-      }
-      while (!(hasBreakingChanges.equals("y") || hasBreakingChanges.equals("n"))) {
-        System.out.print("Invalid input, please enter y or n: ");
-        breakingChanges = sc.nextLine();
-      }
-      if (hasBreakingChanges.equals("y")) {
-        System.out.print("Draw Attention? (y/n): ");
-        drawAttention = sc.nextLine().equals("y");
-        if (message.isEmpty() && !drawAttention) {
-          System.out.print(
-              "A BREAKING CHANGE commit requires a body. Please enter a longer description of the"
-                  + " commit itself: ");
-          message = sc.nextLine();
-          while (message.isEmpty()) {
-            System.out.print("The message is empty, please enter a valid message: ");
-            message = sc.nextLine();
-          }
-        }
-        System.out.print("Describe the breaking changes: ");
-        breakingChanges = sc.nextLine();
-        while (breakingChanges.isEmpty() && !drawAttention) {
-          System.out.print(
-              "The breaking changes is empty, please enter a valid breaking changes: ");
-          breakingChanges = sc.nextLine();
-        }
-      }
-      if (issueReferences == null) {
-        System.out.print("Enter the issue reference(s) (press enter to skip): ");
-        issueReferences = sc.nextLine();
-        sc.close();
-      }
+      breakingChanges = getBreakingChanges();
     }
+
+    if (issueReferences == null) {
+      System.out.print("Enter the issue reference(s) (press enter to skip): ");
+      issueReferences = sc.nextLine();
+    }
+    sc.close();
+
     String commit = "";
+    
     if (scopeType != null && !scopeType.isEmpty()) {
       commit += scopeType;
     }
@@ -198,6 +172,7 @@ public class MainCommand implements Runnable {
     if (issueReferences != null && !issueReferences.isEmpty()) {
       commit += issueReferences;
     }
+
     Process gitProcess;
     try {
       gitProcess = new ProcessBuilder("git", "commit", "-m", commit).start();
@@ -295,4 +270,49 @@ public class MainCommand implements Runnable {
       } 
     }
   }
+
+  private String getBreakingChanges() {
+    System.out.print("Does this commit have breaking changes? (y/n): ");
+    String hasBreakingChanges = sc.nextLine();
+    while (!(hasBreakingChanges.equals("y") || hasBreakingChanges.equals("n") || hasBreakingChanges.isEmpty())) {
+      System.out.print("Invalid input, please enter y or n: ");
+      hasBreakingChanges = sc.nextLine();
+    }
+    if (hasBreakingChanges.equals("y")) {
+      System.out.print("Draw Attention? (y/n): ");
+      drawAttention = sc.nextLine().equals("y");
+      if (message.isEmpty() && !drawAttention) {
+        System.out.print(
+            "A BREAKING CHANGE commit requires a body. Please enter a longer description of the"
+                + " commit itself: ");
+        message = sc.nextLine();
+        while (message.isEmpty()) {
+          System.out.print("The message is empty, please enter a valid message: ");
+          message = sc.nextLine();
+        }
+      }
+      System.out.print("Describe the breaking changes: ");
+      breakingChanges = sc.nextLine();
+      while (breakingChanges.isEmpty() && !drawAttention) {
+        System.out.print(
+            "The breaking changes is empty, please enter a valid breaking changes: ");
+        breakingChanges = sc.nextLine();
+      }
+    }
+    return breakingChanges;
+  }
+
+  private String getDescription() {
+    System.out.print(
+        "Enter the commit description, the description is a short summary of the code changes"
+            + " (maximum 92 characters): ");
+    description = sc.nextLine();
+    while (description.length() > 92 || description.length() == 0) {
+      System.out.print(
+          "The description is too long or empty, please enter a valid description: ");
+      description = sc.nextLine();
+    }
+    return description;
+  }
+
 }
