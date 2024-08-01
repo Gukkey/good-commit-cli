@@ -4,6 +4,6 @@
     "homepage": "https://github.com/Gukkey/good-commit-cli/tree/main",
     "license": "MIT",
     "url": "https://github.com/Gukkey/good-commit-cli/releases/download/v1.0.1/good-commit-cli.exe",
-    "hash": "7ce5bfee673ab38b10ca0eb77429e7d660fd2d42e41ad7df0f51752a0c2ca7a6",
+    "hash": "ca3aeba55d21b9440c4d541d852164143a61bd84ad216a9b3add998d71e601ad",
     "bin": "good-commit-cli.exe"
 }
