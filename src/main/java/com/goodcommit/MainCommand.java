@@ -1,7 +1,12 @@
 package com.goodcommit;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
@@ -12,8 +17,9 @@ import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
+import picocli.CommandLine.Parameters;
 
-@Command(name = "", description = "Good commit, a CLI alternative for commitzen")
+@Command(name = "", mixinStandardHelpOptions = true, description = "Good commit, a CLI alternative for commitzen")
 public class MainCommand implements Runnable {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(MainCommand.class);
@@ -25,35 +31,37 @@ public class MainCommand implements Runnable {
   "██║   ██║██║   ██║██║   ██║██║  ██║    ██║     ██║   ██║██║╚██╔╝██║██║╚██╔╝██║██║   ██║       ██║     ██║     ██║\n" +
   "╚██████╔╝╚██████╔╝╚██████╔╝██████╔╝    ╚██████╗╚██████╔╝██║ ╚═╝ ██║██║ ╚═╝ ██║██║   ██║       ╚██████╗███████╗██║\n" +
   " ╚═════╝  ╚═════╝  ╚═════╝ ╚═════╝      ╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚═╝     ╚═╝╚═╝   ╚═╝        ╚═════╝╚══════╝╚═╝\n" +
-  "                                                                                                                 ";
+  "                                                                                                                                                                   ";
 
   private static final String[] scopes = {
       "build", "ci", "chore", "docs", "feat", "fix", "perf", "refactor", "style", "test"
   };
 
   private static final String HELP_MESSAGE = "For Good commit cli to work, you just have to type \"good-commit\" and the process will"
-      + " start and the CLI will ask necessary questions for the commit. If you want to speed"
-      + " up the process and give some manual inputs via options, here are they.\n"
+      + " start and the CLI will ask necessary prompts for the commit. If you want to speed"
+      + " up the process and give some manual inputs via options, below are the options. You can add the git flags after these flags like \"good-commit <good-commit-flags> <git commit flags>\" \n"
       + //
       "\n"
       + //
-      "-t, --type: scope type\n"
+      "     --type              scope type\n"
       + //
-      "-s, --scope: scope\n"
-      + //
-      "\n"
-      + //
-      "-d, --description: commit description\n"
-      + //
-      "-m, --message: commit message\n"
+      "     --scope             scope\n"
       + //
       "\n"
       + //
-      "-b, --breaking-changes: breaking changes description\n"
+      "     --description       commit description\n"
       + //
-      "-a, --draw-attention: draw attention\n"
+      "     --message           commit message\n"
       + //
-      "-i, --issue-references: (github) issue references\n"
+      "\n"
+      + //
+      "     --breaking-changes  breaking changes description\n"
+      + //
+      "     --draw-attention    draw attention\n"
+      + //
+      "     --issue-references  issue references\n"
+      + //
+      "     --safe              safe mode\n"
       + //
       "\n"
       + //
@@ -69,7 +77,7 @@ public class MainCommand implements Runnable {
   @Option(names = { "--description" }, arity = "0..1", description = "Commit description")
   private String description;
 
-  @Option(names = { "--message" }, arity = "0..1", description = "Commit message")
+  @Option(names = { "--commit-message" }, arity = "0..1", description = "Commit message")
   private String message;
 
   @Option(names = { "--breaking-changes" }, arity = "0..1", description = "Breaking changes")
@@ -81,15 +89,21 @@ public class MainCommand implements Runnable {
   @Option(names = { "--issue-references" }, arity = "0..1", description = "Issue Reference(s)")
   private String issueReferences;
 
+  @Option(names = { "--safe" }, arity = "0..1", description = "Safe mode, whether to display the commit message before commiting")
+  private boolean safeMode = true;
+
   @Option(names = { "--help" }, description = "Display help message")
   private boolean help;
 
+  @Parameters(description = "Git flags", arity = "0..*")
+  private String[] gitFlags = new String[0];
+  
   private Scanner sc = new Scanner(System.in);
 
   @Override
   public void run() {
 
-    System.out.println("\n" + LOGO + "A CLI alternative for commitzen \n");
+    System.out.println("\n\n" + LOGO + "\n\nA CLI alternative for commitzen \n");
 
     if (help) {
       System.out.println(HELP_MESSAGE);
@@ -135,17 +149,45 @@ public class MainCommand implements Runnable {
       System.out.print("Enter the issue reference(s) (press enter to skip): ");
       issueReferences = sc.nextLine();
     }
-    sc.close();
 
     String commit = getString(scopeType, scope, drawAttention, description, message, breakingChanges, issueReferences);
     LOGGER.info(commit);
+    
+    if (safeMode) {
+      System.out.println("Commit message: " + commit
+            + "\nPress any key to continue commiting, stop the CLI to stop the commit process...");
+      sc.nextLine();
+    }
 
+    sc.close();
     Process gitProcess;
+
     try {
-      gitProcess = new ProcessBuilder("git", "commit", "-m", commit).start();
+      StringBuilder sb = new StringBuilder();
+
+      for (String s : gitFlags) {
+        sb.append(s + " ");
+      }
+      
+      String gitFlagsString = sb.toString().trim();
+      commit = commit.trim();
+
+      List<String> processBuilderList = new ArrayList<>();
+      processBuilderList.add("git");
+      processBuilderList.add("commit");
+      processBuilderList.add("-m");
+      processBuilderList.add(commit);
+      
+      LOGGER.info("SB LENGTH: {}", sb.length());
+      if(sb.length() != 0) {
+        processBuilderList.add(gitFlagsString);
+      }
+      
+      gitProcess = new ProcessBuilder(processBuilderList).start();
       gitProcess.waitFor();
       String res = new String(gitProcess.getInputStream().readAllBytes());
       LOGGER.info(res);
+
       if (gitProcess.exitValue() == 0) {
         LOGGER.info("Commit created successfully");
         System.out.println(String.format(
@@ -162,7 +204,7 @@ public class MainCommand implements Runnable {
 
   private static String getString(String scopeType, String scope, boolean drawAttention, String description,
       String message, String breakingChanges, String issueReferences) {
-    String commit = "";
+    String commit = "\"";
 
     if (scopeType != null && !scopeType.isEmpty()) {
       commit += scopeType;
@@ -174,22 +216,40 @@ public class MainCommand implements Runnable {
       commit += "!";
     }
     if (description != null && !description.isEmpty()) {
-      commit += ": " + description + "\n";
+      commit += ": " + description;
     }
     if (message != null && !message.isEmpty()) {
-      commit += message + "\n";
+      commit += "\n" + message;
     }
     if (breakingChanges != null && !breakingChanges.isEmpty()) {
-      commit += "BREAKING CHANGE: " + breakingChanges + "\n";
+      commit += "\n" + "BREAKING CHANGE: " + breakingChanges;
     }
     if (issueReferences != null && !issueReferences.isEmpty()) {
-      commit += issueReferences;
+      commit += "\nIssue ref(s):" + issueReferences;
     }
+    commit += "\"";
     return commit;
   }
 
   public static void main(String[] args) {
-    new CommandLine(new MainCommand()).execute(args);
+    if (!validateArgs(args)) {
+      System.out.println(
+          "Wrong arguments, please go through help message so see how to construct proper args by entering \"git commit --help\"");
+      System.exit(0);
+    } else {
+      int exitCode = new CommandLine(new MainCommand())
+          .setUnmatchedOptionsArePositionalParams(true)
+          .execute(args);
+      System.exit(exitCode);
+    }
+  }
+
+  private static boolean validateArgs(String[] args) {
+    // blacklist "-h, m"
+    String[] deniedFlags = {"-h", "-m"};
+    Set<String> argsSet = new HashSet<>();
+    Arrays.stream(args).forEach(argsSet::add);
+    return Arrays.stream(deniedFlags).noneMatch(argsSet::contains);
   }
 
   private static String selectScopeType() throws IOException {
@@ -256,6 +316,7 @@ public class MainCommand implements Runnable {
             selected = (selected + 1) % options.length;
             break;
           case 13: // Enter
+            terminal.close();
             return scopes[selected];
         }
       } catch (IOException e) {
