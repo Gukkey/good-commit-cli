@@ -6,3 +6,5 @@ target/
 
 # good-commit folder, contains metadata for chocolatey
 good-commit/
+
+manifests/
