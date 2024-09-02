@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
+import org.jline.reader.LineReader;
+import org.jline.reader.LineReaderBuilder;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 import org.jline.utils.AttributedString;
@@ -154,9 +156,13 @@ public class MainCommand implements Runnable {
     LOGGER.info(commit);
     
     if (safeMode) {
-      System.out.println("Commit message: " + commit
-            + "\nPress any key to continue commiting, stop the CLI to stop the commit process...");
-      sc.nextLine();
+      try (Terminal terminal = TerminalBuilder.terminal()) {
+        LineReader lineReader = LineReaderBuilder.builder().terminal(terminal).build();
+        String prompt = "\n\nBelow is the generated commit message, please make changes if you want or press ENTER to continue to start the commit process\n";
+        commit = lineReader.readLine(prompt, null, commit);
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
     }
 
     sc.close();
@@ -186,7 +192,7 @@ public class MainCommand implements Runnable {
       gitProcess = new ProcessBuilder(processBuilderList).start();
       gitProcess.waitFor();
       String res = new String(gitProcess.getInputStream().readAllBytes());
-      LOGGER.info(res);
+      System.out.println("\n" + res);
 
       if (gitProcess.exitValue() == 0) {
         LOGGER.info("Commit created successfully");
