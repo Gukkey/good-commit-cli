@@ -105,13 +105,15 @@ public class MainCommand implements Runnable {
   @Override
   public void run() {
 
-    System.out.println("\n\n" + LOGO + "\n\nA CLI alternative for commitzen \n");
-
     if (help) {
       System.out.println(HELP_MESSAGE);
       sc.close();
       return;
     }
+
+    System.out.println("\n\n" + LOGO + "\n\nA CLI alternative for commitzen \n");
+
+    
 
     if (scopeType == null) {
       try {
