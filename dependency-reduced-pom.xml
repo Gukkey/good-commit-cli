@@ -4,7 +4,7 @@
   <groupId>com.goodcommit</groupId>
   <artifactId>good-commit-cli</artifactId>
   <name>good-commit-cli</name>
-  <version>1.0.1</version>
+  <version>1.0.2</version>
   <url>https://github.com/Gukkey/good-commit-cli</url>
   <build>
     <pluginManagement>
@@ -87,22 +87,15 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>9</source>
+          <target>9</target>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
-  <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.11</version>
-      <scope>test</scope>
-      <exclusions>
-        <exclusion>
-          <artifactId>hamcrest-core</artifactId>
-          <groupId>org.hamcrest</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-  </dependencies>
   <properties>
     <maven.compiler.target>8</maven.compiler.target>
     <maven.compiler.source>8</maven.compiler.source>

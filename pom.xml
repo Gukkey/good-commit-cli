@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>
 		4.0.0
 	</modelVersion>
@@ -10,7 +12,7 @@
 		good-commit-cli
 	</artifactId>
 	<version>
-		1.0.1
+		1.0.2
 	</version>
 	<name>
 		good-commit-cli
@@ -30,20 +32,6 @@
 		</maven.compiler.target>
 	</properties>
 	<dependencies>
-		<dependency>
-			<groupId>
-				junit
-			</groupId>
-			<artifactId>
-				junit
-			</artifactId>
-			<version>
-				4.11
-			</version>
-			<scope>
-				test
-			</scope>
-		</dependency>
 		<!-- https://mvnrepository.com/artifact/info.picocli/picocli -->
 		<dependency>
 			<groupId>
@@ -71,12 +59,26 @@
 				3.26.3
 			</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>2.0.13</version>
+			<scope>compile</scope>
+		</dependency>
+		<!-- <dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<version>2.0.13</version>
+		</dependency> -->
 	</dependencies>
 	<build>
 		<pluginManagement>
-			<!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
+			<!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent
+			pom) -->
 			<plugins>
-				<!-- clean lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#clean_Lifecycle -->
+				<!-- clean lifecycle, see
+				https://maven.apache.org/ref/current/maven-core/lifecycles.html#clean_Lifecycle -->
 				<plugin>
 					<artifactId>
 						maven-clean-plugin
@@ -85,7 +87,8 @@
 						3.1.0
 					</version>
 				</plugin>
-				<!-- default lifecycle, jar packaging: see https://maven.apache.org/ref/current/maven-core/default-bindings.html#Plugin_bindings_for_jar_packaging -->
+				<!-- default lifecycle, jar packaging: see
+				https://maven.apache.org/ref/current/maven-core/default-bindings.html#Plugin_bindings_for_jar_packaging -->
 				<plugin>
 					<artifactId>
 						maven-resources-plugin
@@ -146,7 +149,8 @@
 						2.8.2
 					</version>
 				</plugin>
-				<!-- site lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#site_Lifecycle -->
+				<!-- site lifecycle, see
+				https://maven.apache.org/ref/current/maven-core/lifecycles.html#site_Lifecycle -->
 				<plugin>
 					<artifactId>
 						maven-site-plugin
@@ -211,7 +215,8 @@
 						</goals>
 						<configuration>
 							<transformers>
-								<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
 									<mainClass>
 										com.goodcommit.MainCommand
 									</mainClass>
@@ -220,6 +225,22 @@
 						</configuration>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<groupId>
+					org.apache.maven.plugins
+				</groupId>
+				<artifactId>
+					maven-compiler-plugin
+				</artifactId>
+				<configuration>
+					<source>
+						9
+					</source>
+					<target>
+						9
+					</target>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
