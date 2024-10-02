@@ -196,10 +196,10 @@ public class MainCommand implements Runnable {
             commit));
       } else {
         String errorMessage = new String(gitProcess.getErrorStream().readAllBytes());
-        LOGGER.error("Error while trying to create commit: {}", errorMessage);
+        System.out.println("Error while trying to create commit: " + errorMessage);
       }
     } catch (IOException | InterruptedException e) {
-      LOGGER.error(String.format("Failed to create commit: %s", e.getMessage()));
+      System.out.println("Failed to create commit: %s" + e.getMessage());
     }
   }
 
