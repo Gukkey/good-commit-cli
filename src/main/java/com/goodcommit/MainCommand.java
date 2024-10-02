@@ -139,7 +139,11 @@ public class MainCommand implements Runnable {
     }
 
     if (breakingChanges == null) {
-      breakingChanges = getBreakingChanges();
+      try {
+        breakingChanges = getBreakingChanges(message, drawAttention);
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
     }
 
     if (issueReferences == null) {
