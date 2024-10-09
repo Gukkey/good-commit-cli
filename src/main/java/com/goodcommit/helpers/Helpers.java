@@ -115,8 +115,7 @@ public class Helpers {
         Scanner sc = new Scanner(System.in);
         String description = null;
         System.out.print(
-                "Enter the commit description, the description is a short summary of the code changes"
-                        + " (maximum 92 characters): ");
+                "Enter the commit description, the description is a very short summary of the code changes (maximum 92 characters): ");
         description = sc.nextLine();
         while (description.length() > 92 || description.isEmpty()) {
             System.out.print(
@@ -127,7 +126,7 @@ public class Helpers {
         return description;
     }
 
-    public static String getBreakingChanges(String message, boolean drawAttention) throws IOException {
+    public static String getBreakingChanges(String body, boolean drawAttention) throws IOException {
         Scanner sc = new Scanner(System.in);
         String breakingChanges = null;
         System.out.print("Does this commit have breaking changes? (y/n): ");
@@ -142,14 +141,13 @@ public class Helpers {
                 System.out.print("Draw Attention? (y/n): ");
                 drawAttention = "y".equals(sc.nextLine());
             }
-            if (message.isEmpty() && !drawAttention) {
+            if (body.isEmpty() && !drawAttention) {
                 System.out.print(
-                        "A BREAKING CHANGE commit requires a body. Please enter a longer description of the"
-                                + " commit itself: ");
-                message = sc.nextLine();
-                while (message.isEmpty()) {
-                    System.out.print("The message is empty, please enter a valid message: ");
-                    message = sc.nextLine();
+                        "A BREAKING CHANGE commit requires a body. Please enter a longer description of the commit itself: ");
+                body = sc.nextLine();
+                while (body.isEmpty()) {
+                    System.out.print("The body is empty, please enter a valid body: ");
+                    body = sc.nextLine();
                 }
             }
             System.out.print("Describe the breaking changes: ");
@@ -164,58 +162,58 @@ public class Helpers {
         return breakingChanges;
     }
 
-    private static String breakingChangesResult() throws IOException {
-        Terminal terminal = null;
-        terminal = TerminalBuilder.builder().system(true).build();
-        String[] options = { "yes", "no" };
-        if (terminal != null) {
-            int selected = 0;
-            while (true) {
-                terminal.puts(org.jline.utils.InfoCmp.Capability.clear_screen);
-                terminal.flush();
-                for (int i = 0; i < options.length; i++) {
-                    if (i == selected) {
-                        terminal
-                                .writer()
-                                .print(
-                                        new AttributedString(
-                                                "✔️  " + options[i],
-                                                AttributedStyle.DEFAULT.foreground(AttributedStyle.GREEN))
-                                                .toAnsi());
-                    } else {
-                        terminal.writer().print(" " + options[i]);
-                    }
-                }
-                terminal.writer().println();
-                terminal.flush();
-                // terminal.puts(Capability.clear_screen);
+    // private static String breakingChangesResult() throws IOException {
+    //     Terminal terminal = null;
+    //     terminal = TerminalBuilder.builder().system(true).build();
+    //     String[] options = { "yes", "no" };
+    //     if (terminal != null) {
+    //         int selected = 0;
+    //         while (true) {
+    //             terminal.puts(org.jline.utils.InfoCmp.Capability.clear_screen);
+    //             terminal.flush();
+    //             for (int i = 0; i < options.length; i++) {
+    //                 if (i == selected) {
+    //                     terminal
+    //                             .writer()
+    //                             .print(
+    //                                     new AttributedString(
+    //                                             "✔️  " + options[i],
+    //                                             AttributedStyle.DEFAULT.foreground(AttributedStyle.GREEN))
+    //                                             .toAnsi());
+    //                 } else {
+    //                     terminal.writer().print(" " + options[i]);
+    //                 }
+    //             }
+    //             terminal.writer().println();
+    //             terminal.flush();
+    //             // terminal.puts(Capability.clear_screen);
 
-                // Read input
-                int c;
-                try {
-                    c = terminal.reader().read();
-                    switch (c) {
-                        case 68: // Left arrow
-                            selected = (selected - 1 + options.length) % options.length;
-                            break;
-                        case 67: // Right arrow
-                            selected = (selected + 1) % options.length;
-                            break;
-                        case 13: // Enter
-                            terminal.close();
-                            return scopes[selected];
-                    }
-                } catch (IOException e) {
-                    LOGGER.error(String.format("Failed to read input: %s", e.getMessage()));
-                }
-            }
-        } else {
-            throw new RuntimeException("Failed to create terminal");
-        }
-    }
+    //             // Read input
+    //             int c;
+    //             try {
+    //                 c = terminal.reader().read();
+    //                 switch (c) {
+    //                     case 68: // Left arrow
+    //                         selected = (selected - 1 + options.length) % options.length;
+    //                         break;
+    //                     case 67: // Right arrow
+    //                         selected = (selected + 1) % options.length;
+    //                         break;
+    //                     case 13: // Enter
+    //                         terminal.close();
+    //                         return scopes[selected];
+    //                 }
+    //             } catch (IOException e) {
+    //                 LOGGER.error(String.format("Failed to read input: %s", e.getMessage()));
+    //             }
+    //         }
+    //     } else {
+    //         throw new RuntimeException("Failed to create terminal");
+    //     }
+    // }
 
     public static String getString(String scopeType, String scope, boolean drawAttention, String description,
-            String message, String breakingChanges, String issueReferences) {
+            String body, String breakingChanges, String issueReferences) {
         String commit = "\"";
 
         if (scopeType != null && !scopeType.isEmpty()) {
@@ -230,8 +228,8 @@ public class Helpers {
         if (description != null && !description.isEmpty()) {
             commit += ": " + description;
         }
-        if (message != null && !message.isEmpty()) {
-            commit += "\n" + message;
+        if (body != null && !body.isEmpty()) {
+            commit += "\n" + body;
         }
         if (breakingChanges != null && !breakingChanges.isEmpty()) {
             commit += "\n" + "BREAKING CHANGE: " + breakingChanges;

@@ -49,7 +49,7 @@ public class MainCommand implements Runnable {
       + //
       "     --description       commit description\n"
       + //
-      "     --message           commit message\n"
+      "     --body           commit body\n"
       + //
       "\n"
       + //
@@ -75,8 +75,8 @@ public class MainCommand implements Runnable {
   @Option(names = { "--description" }, arity = "0..1", description = "Commit description")
   private String description;
 
-  @Option(names = { "--commit-message" }, arity = "0..1", description = "Commit message")
-  private String message;
+  @Option(names = { "--commit-body" }, arity = "0..1", description = "Commit body")
+  private String body;
 
   @Option(names = { "--breaking-changes" }, arity = "0..1", description = "Breaking changes")
   private String breakingChanges;
@@ -87,7 +87,7 @@ public class MainCommand implements Runnable {
   @Option(names = { "--issue-references" }, arity = "0..1", description = "Issue Reference(s)")
   private String issueReferences;
 
-  @Option(names = { "--safe" }, arity = "0..1", description = "Safe mode, whether to display the commit message before commiting")
+  @Option(names = { "--safe" }, arity = "0..1", description = "Safe mode, whether to display the full commit message before commiting")
   private boolean safeMode = true;
 
   @Option(names = { "--help" }, description = "Display help message")
@@ -108,6 +108,7 @@ public class MainCommand implements Runnable {
 
     System.out.println("\n\n" + LOGO + "\n\nA CLI alternative for commitzen \n");
 
+    
     if (scopeType == null) {
       try {
         scopeType = selectScopeType();
@@ -118,7 +119,8 @@ public class MainCommand implements Runnable {
         return;
       }
     }
-
+    
+    LOGGER.info(System.getProperty("user.dir"));
     if (scope == null) {
       System.out.print(
           "What is the scope of this change (e.g. component or file name): (press enter to skip):"
@@ -131,16 +133,16 @@ public class MainCommand implements Runnable {
       LOGGER.info("Description: {}", description);
     }
 
-    if (message == null) {
+    if (body == null) {
       System.out.print(
-          "Enter the commit message, the message is a longer description of the commit (press enter"
+          "Enter the commit body, the body is a longer description of the commit (press enter"
               + " to skip): ");
-      message = sc.nextLine();
+      body = sc.nextLine();
     }
 
     if (breakingChanges == null) {
       try {
-        breakingChanges = getBreakingChanges(message, drawAttention);
+        breakingChanges = getBreakingChanges(body, drawAttention);
       } catch (IOException e) {
         e.printStackTrace();
       }
@@ -151,13 +153,13 @@ public class MainCommand implements Runnable {
       issueReferences = sc.nextLine();
     }
 
-    String commit = getString(scopeType, scope, drawAttention, description, message, breakingChanges, issueReferences);
+    String commit = getString(scopeType, scope, drawAttention, description, body, breakingChanges, issueReferences);
     LOGGER.info(commit);
 
     if (safeMode) {
       try (Terminal terminal = TerminalBuilder.terminal()) {
         LineReader lineReader = LineReaderBuilder.builder().terminal(terminal).build();
-        String prompt = "\n\nBelow is the generated commit message, please make changes if you want or press ENTER to continue to start the commit process\n";
+        String prompt = "\n\nBelow is the full generated commit message, please make changes if you want or press ENTER to continue to start the commit process\n";
         commit = lineReader.readLine(prompt, null, commit);
       } catch (IOException e) {
         e.printStackTrace();
@@ -196,7 +198,7 @@ public class MainCommand implements Runnable {
       if (gitProcess.exitValue() == 0) {
         LOGGER.info("Commit created successfully");
         System.out.println(String.format(
-            "Commit has been created successfully. Commit message: %n%s%nIncase if you want to edit the commit message use the following, git commit --amend -m \"New commit message\"",
+            "Commit has been created successfully. Full commit message: %n%s%nIncase if you want to edit the commit message use the following, git commit --amend -m \"New commit message\"",
             commit));
       } else {
         String errorMessage = new String(gitProcess.getErrorStream().readAllBytes());
