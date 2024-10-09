@@ -3,6 +3,7 @@ package com.goodcommit;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.Scanner;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
@@ -49,7 +50,7 @@ public class MainCommand implements Runnable {
       + //
       "     --description       commit description\n"
       + //
-      "     --body           commit body\n"
+      "     --body              commit body\n"
       + //
       "\n"
       + //
@@ -91,7 +92,10 @@ public class MainCommand implements Runnable {
   private boolean safeMode = true;
 
   @Option(names = { "--help" }, description = "Display help message")
-  private boolean help;
+  private boolean showHelp;
+
+  @Option(names = { "--version", "-v" }, description = "Display the CLI's version")
+  private boolean showVersion;
 
   @Parameters(description = "Git flags", arity = "0..*")
   private String[] gitFlags = new String[0];
@@ -100,8 +104,21 @@ public class MainCommand implements Runnable {
   @Override
   public void run() {
 
-    if (help) {
+    if (showHelp) {
       System.out.println(HELP_MESSAGE);
+      sc.close();
+      return;
+    }
+
+    if (showVersion) {
+      Properties props = new Properties();
+      try {
+        props.load(MainCommand.class.getClassLoader().getResourceAsStream("project.properties"));
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+      String version = props.getProperty("version");
+      System.out.println("Good commit version: " + version);
       sc.close();
       return;
     }
@@ -121,6 +138,7 @@ public class MainCommand implements Runnable {
     }
     
     LOGGER.info(System.getProperty("user.dir"));
+
     if (scope == null) {
       System.out.print(
           "What is the scope of this change (e.g. component or file name): (press enter to skip):"

@@ -2,62 +2,30 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>
-		4.0.0
-	</modelVersion>
-	<groupId>
-		com.goodcommit
-	</groupId>
-	<artifactId>
-		good-commit-cli
-	</artifactId>
-	<version>
-		1.0.3
-	</version>
-	<name>
-		good-commit-cli
-	</name>
-	<url>
-		https://github.com/Gukkey/good-commit-cli
-	</url>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.goodcommit</groupId>
+	<artifactId>good-commit-cli</artifactId>
+	<version>1.0.3</version>
+	<name>good-commit-cli</name>
+	<url>https://github.com/Gukkey/good-commit-cli</url>
 	<properties>
-		<project.build.sourceEncoding>
-			UTF-8
-		</project.build.sourceEncoding>
-		<maven.compiler.source>
-			8
-		</maven.compiler.source>
-		<maven.compiler.target>
-			8
-		</maven.compiler.target>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>8</maven.compiler.source>
+		<maven.compiler.target>8</maven.compiler.target>
 	</properties>
 	<dependencies>
 		<!-- https://mvnrepository.com/artifact/info.picocli/picocli -->
 		<dependency>
-			<groupId>
-				info.picocli
-			</groupId>
-			<artifactId>
-				picocli
-			</artifactId>
-			<version>
-				4.7.6
-			</version>
-			<scope>
-				compile
-			</scope>
+			<groupId>info.picocli</groupId>
+			<artifactId>picocli</artifactId>
+			<version>4.7.6</version>
+			<scope>compile</scope>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.jline/jline -->
 		<dependency>
-			<groupId>
-				org.jline
-			</groupId>
-			<artifactId>
-				jline
-			</artifactId>
-			<version>
-				3.26.3
-			</version>
+			<groupId>org.jline</groupId>
+			<artifactId>jline</artifactId>
+			<version>3.26.3</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
 		<dependency>
@@ -73,6 +41,12 @@
 		</dependency> -->
 	</dependencies>
 	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
 		<pluginManagement>
 			<!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent
 			pom) -->

@@ -4,9 +4,15 @@
   <groupId>com.goodcommit</groupId>
   <artifactId>good-commit-cli</artifactId>
   <name>good-commit-cli</name>
-  <version>1.0.2</version>
+  <version>1.0.3</version>
   <url>https://github.com/Gukkey/good-commit-cli</url>
   <build>
+    <resources>
+      <resource>
+        <filtering>true</filtering>
+        <directory>src/main/resources</directory>
+      </resource>
+    </resources>
     <pluginManagement>
       <plugins>
         <plugin>
