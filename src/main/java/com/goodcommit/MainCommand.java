@@ -42,7 +42,7 @@ public class MainCommand implements Runnable {
       + //
       "\n"
       + //
-      "     --type              scope type\n"
+      "     --scope-type        scope type\n"
       + //
       "     --scope             scope\n"
       + //
@@ -50,7 +50,7 @@ public class MainCommand implements Runnable {
       + //
       "     --description       commit description\n"
       + //
-      "     --body              commit body\n"
+      "     --commit-body       commit body\n"
       + //
       "\n"
       + //
@@ -91,7 +91,7 @@ public class MainCommand implements Runnable {
   @Option(names = { "--safe" }, arity = "0..1", description = "Safe mode, whether to display the full commit message before commiting")
   private boolean safeMode = true;
 
-  @Option(names = { "--help" }, description = "Display help message")
+  @Option(names = { "--help", "-h"}, description = "Display help message")
   private boolean showHelp;
 
   @Option(names = { "--version", "-v" }, description = "Display the CLI's version")

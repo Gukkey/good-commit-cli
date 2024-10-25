@@ -32,7 +32,7 @@ public class Helpers {
 
     public static boolean validateArgs(String[] args) {
         // blacklist "-h, m"
-        String[] deniedFlags = { "-h", "-m" };
+        String[] deniedFlags = { "-m" };
         Set<String> argsSet = new HashSet<>();
         Arrays.stream(args).forEach(argsSet::add);
         return Arrays.stream(deniedFlags).noneMatch(argsSet::contains);
