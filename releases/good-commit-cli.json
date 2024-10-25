@@ -1,9 +1,9 @@
 {
-    "version": "1.0.1",
+    "version": "1.0.3",
     "description": "A CLI alternative for commitzen",
     "homepage": "https://github.com/Gukkey/good-commit-cli/tree/main",
     "license": "MIT",
-    "url": "https://github.com/Gukkey/good-commit-cli/releases/download/v1.0.1/good-commit-cli.exe",
-    "hash": "ca3aeba55d21b9440c4d541d852164143a61bd84ad216a9b3add998d71e601ad",
+    "url": "https://github.com/Gukkey/good-commit-cli/releases/download/v1.0.3/good-commit-cli.exe",
+    "hash": "997b21c5229df1b6330122a6d32aa6087e35af0833ee873dadab1b97ba6dc6d1",
     "bin": "good-commit-cli.exe"
 }
